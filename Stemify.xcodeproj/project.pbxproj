@@ -19,6 +19,8 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
+				Spleeter/Core/TFModels/.gitkeep,
+				"Spleeter/third-party/.gitkeep",
 			);
 			target = 03C0DEAE2E5C8CF900A87D06 /* Stemify */;
 		};

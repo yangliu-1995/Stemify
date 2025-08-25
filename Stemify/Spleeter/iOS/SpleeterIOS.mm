@@ -77,7 +77,7 @@
 
 - (void)doProcesFileAt:(NSString *)path saveAt:(NSString *)folder {
     dispatch_async(dispatch_get_global_queue(0, 0), ^{
-        auto waveform_names_2stems = std::vector<std::string>{"vocal", "drums"};
+        auto waveform_names_2stems = std::vector<std::string>{"vocal", "accompaniment"};
         auto waveform_names_5stems = std::vector<std::string>{"vocal", "drums", "bass", "piano", "accompaniment"};
         const char* filePathCStr = [path UTF8String];
         const auto fullWaveform = self->_audioAdapter->Load(filePathCStr, 44100);
@@ -116,68 +116,51 @@
 }
 
 - (float)getOptimalWindowSeconds:(size_t)numTracks {
-    // 获取设备内存信息
     NSProcessInfo *processInfo = [NSProcessInfo processInfo];
     unsigned long long totalMemory = processInfo.physicalMemory;
+    BOOL isIOSAppRunOnMac = [processInfo isiOSAppOnMac];
 
-    // 获取设备型号信息（简单判断性能）
     struct utsname systemInfo;
     uname(&systemInfo);
     NSString *deviceModel = [NSString stringWithCString:systemInfo.machine encoding:NSUTF8StringEncoding];
 
-    // 基础窗口大小配置
-    float baseWindowSeconds = 12.0f; // 默认12秒
+    float baseWindowSeconds = 12.0f;
 
-    // 根据模型复杂度调整
     if (numTracks == 2) {
-        // 2stems模型相对简单
         baseWindowSeconds = 12.0f;
     } else if (numTracks == 5) {
-        // 5stems模型更复杂，需要更小的窗口
         baseWindowSeconds = 8.0f;
     } else {
-        // 其他模型，根据音轨数量估算
         baseWindowSeconds = std::max(6.0f, 12.0f - (numTracks - 2) * 1.0f);
     }
 
-    // 根据设备内存调整窗口大小
     float memoryGB = totalMemory / (1024.0f * 1024.0f * 1024.0f);
     float memoryFactor = 1.0f;
 
-    if (memoryGB >= 8.0f) {
-        // 8GB+ 内存：高性能设备，可以使用更大窗口
-        memoryFactor = 1.5f;
-    } else if (memoryGB >= 4.0f) {
-        // 4-8GB 内存：中等性能设备，标准窗口
+    if (memoryGB >= 16.0f) {
+        memoryFactor = 3.0f;
+    } else if (memoryGB >= 8.0f) {
+        memoryFactor = 2.0f;
+    } else if (memoryGB >= 6.0f) {
+        memoryFactor = 1.2f;
+    }  else if (memoryGB >= 4.0f) {
         memoryFactor = 1.0f;
     } else if (memoryGB >= 2.0f) {
-        // 2-4GB 内存：低性能设备，使用较小窗口
         memoryFactor = 0.75f;
     } else {
-        // <2GB 内存：极低性能设备，使用最小窗口
         memoryFactor = 0.5f;
     }
 
-    // 根据设备型号微调（iOS设备特定优化）
     if ([deviceModel containsString:@"iPhone16"] ||
         [deviceModel containsString:@"iPhone15"] ||
         [deviceModel containsString:@"iPhone14"] ||
-        [deviceModel containsString:@"iPad"]) {
-        // 新款iPhone/iPad，性能较好
+        ([deviceModel containsString:@"iPad"] && !isIOSAppRunOnMac)) {
         memoryFactor *= 1.2f;
-    } else if ([deviceModel containsString:@"iPhone12"] ||
-               [deviceModel containsString:@"iPhone13"]) {
-        // 中款iPhone，标准性能
-        memoryFactor *= 1.0f;
-    } else {
-        // 老款设备，保守一些
-        memoryFactor *= 0.8f;
     }
 
     float finalWindowSeconds = baseWindowSeconds * memoryFactor;
 
-    // 确保窗口大小在合理范围内 (4-20秒)
-    finalWindowSeconds = std::max(4.0f, std::min(20.0f, finalWindowSeconds));
+    finalWindowSeconds = std::max(4.0f, std::min(60.0f, finalWindowSeconds));
 
     NSLog(@"total memory: %.1fGB, device model: %@, base window: %.1fs, memory factor: %.2f, final window: %.1fs",
           memoryGB, deviceModel, baseWindowSeconds, memoryFactor, finalWindowSeconds);

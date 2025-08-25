@@ -35,6 +35,8 @@ Inspired by [jinay1991/spleeter](https://github.com/jinay1991/spleeter), it leve
 
    * `TensorFlowLiteC.framework`
    * `TensorFlowLiteSelectTfOps.framework`
+  
+   * On Xcode go to Build Settings ->Other Linker Flags add: -force_load $(SRCROOT)/Stemify/Spleeter/third-party/TensorFlowLiteSelectTfOps.framework/TensorFlowLiteSelectTfOps
 
 4. **FFmpeg Integration**
    FFmpeg is integrated via Swift Package Manager (version 6.0).

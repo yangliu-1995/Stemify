@@ -14,7 +14,7 @@ typedef NS_ENUM(NSUInteger, SpleeterModel) {
 NS_ASSUME_NONNULL_BEGIN
 @interface SpleeterIOS : NSObject
 
-@property (nonatomic, readonly, class) SpleeterIOS *sharedInstance;
+@property (nonatomic, readonly, class) SpleeterIOS *sharedInstance NS_SWIFT_NAME(shared);
 
 - (instancetype)init NS_UNAVAILABLE;
 

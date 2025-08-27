@@ -12,6 +12,7 @@ typedef NS_ENUM(NSUInteger, SpleeterModel) {
 };
 
 NS_ASSUME_NONNULL_BEGIN
+NS_SWIFT_NAME(Spleeter)
 @interface SpleeterIOS : NSObject
 
 @property (nonatomic, readonly, class) SpleeterIOS *sharedInstance NS_SWIFT_NAME(shared);

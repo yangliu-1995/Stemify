@@ -192,7 +192,7 @@ class ViewController: UIViewController {
         }
         currentProjectPath = projectPath.path()
         
-        SpleeterIOS.shared.processFile(at: path, using: .model2Stems, saveAt: projectPath.path()) { [weak self] in
+        Spleeter.shared.processFile(at: path, using: .model2Stems, saveAt: projectPath.path()) { [weak self] in
             guard let self else {
                 return
             }

@@ -9,9 +9,10 @@
 typedef NS_ENUM(NSUInteger, SpleeterModel) {
     SpleeterModel2Stems,
     SpleeterModel5Stems,
-};
+} NS_SWIFT_NAME(Spleeter.Model);
 
 NS_ASSUME_NONNULL_BEGIN
+NS_SWIFT_UI_ACTOR
 NS_SWIFT_NAME(Spleeter)
 @interface SpleeterIOS : NSObject
 

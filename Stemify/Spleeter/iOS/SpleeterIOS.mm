@@ -124,10 +124,10 @@
     uname(&systemInfo);
     NSString *deviceModel = [NSString stringWithCString:systemInfo.machine encoding:NSUTF8StringEncoding];
 
-    float baseWindowSeconds = 32.0f;
+    float baseWindowSeconds = 28.0f;
 
     if (numTracks == 2) {
-        baseWindowSeconds = 32.0f;
+        baseWindowSeconds = 28.0f;
     } else if (numTracks == 5) {
         baseWindowSeconds = 20.0f;
     } else {

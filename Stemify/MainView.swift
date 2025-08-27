@@ -1,5 +1,5 @@
 //
-//  SpleeterView.swift
+//  MainView.swift
 //  Stemify
 //
 //  Created by XueyuanXiao on 2025/8/27.
@@ -8,8 +8,8 @@
 import SwiftUI
 import UniformTypeIdentifiers
 
-struct SpleeterView: View {
-    @StateObject private var viewModel = SpleeterViewModel()
+struct MainView: View {
+    @StateObject private var viewModel = StemifyViewModel()
     @State private var showingFileImporter = false
 
     var body: some View {
@@ -152,6 +152,6 @@ extension Spleeter.Model {
 
 struct SpleeterView_Previews: PreviewProvider {
     static var previews: some View {
-        SpleeterView()
+        MainView()
     }
 }

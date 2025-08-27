@@ -3,7 +3,7 @@ import Combine
 import UniformTypeIdentifiers
 
 @MainActor
-class SpleeterViewModel: ObservableObject {
+class StemifyViewModel: ObservableObject {
     // Published properties for UI binding
     @Published var fileName: String = "Please select an audio file"
     @Published var isProcessing: Bool = false

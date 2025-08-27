@@ -1,5 +1,5 @@
 //
-//  SpleeterViewApp.swift
+//  StemifyApp.swift
 //  Stemify
 //
 //  Created by XueyuanXiao on 2025/8/27.
@@ -8,11 +8,11 @@
 import SwiftUI
 
 @main
-struct SpleeterViewApp: App {
+struct StemifyApp: App {
     // Main entry point for the app
     var body: some Scene {
         WindowGroup {
-            SpleeterView()
+            MainView()
         }
     }
 }

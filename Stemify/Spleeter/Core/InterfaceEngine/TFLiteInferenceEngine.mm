@@ -29,7 +29,7 @@ void TFLiteInferenceEngine::Init() {
     }
 
     TfLiteInterpreterOptions* options = TfLiteInterpreterOptionsCreate();
-    TfLiteInterpreterOptionsSetNumThreads(options, 1);
+    TfLiteInterpreterOptionsSetNumThreads(options, 2);
     // Note: XNNPACK is enabled by default in TFLite C API if available, no explicit setting needed
 
     interpreter_ = TfLiteInterpreterCreate(model, options);

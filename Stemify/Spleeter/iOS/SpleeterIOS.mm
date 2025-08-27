@@ -124,12 +124,12 @@
     uname(&systemInfo);
     NSString *deviceModel = [NSString stringWithCString:systemInfo.machine encoding:NSUTF8StringEncoding];
 
-    float baseWindowSeconds = 12.0f;
+    float baseWindowSeconds = 32.0f;
 
     if (numTracks == 2) {
-        baseWindowSeconds = 12.0f;
+        baseWindowSeconds = 32.0f;
     } else if (numTracks == 5) {
-        baseWindowSeconds = 8.0f;
+        baseWindowSeconds = 20.0f;
     } else {
         baseWindowSeconds = std::max(6.0f, 12.0f - (numTracks - 2) * 1.0f);
     }
@@ -160,7 +160,7 @@
 
     float finalWindowSeconds = baseWindowSeconds * memoryFactor;
 
-    finalWindowSeconds = std::max(4.0f, std::min(60.0f, finalWindowSeconds));
+    finalWindowSeconds = std::max(4.0f, std::min(80.0f, finalWindowSeconds));
 
     NSLog(@"total memory: %.1fGB, device model: %@, base window: %.1fs, memory factor: %.2f, final window: %.1fs",
           memoryGB, deviceModel, baseWindowSeconds, memoryFactor, finalWindowSeconds);

@@ -9,10 +9,11 @@ import SwiftUI
 
 @main
 struct StemifyApp: App {
+    @UIApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
     // Main entry point for the app
     var body: some Scene {
         WindowGroup {
-            MainView()
+            ContentView()
         }
     }
 }

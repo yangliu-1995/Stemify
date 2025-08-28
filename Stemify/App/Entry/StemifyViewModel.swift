@@ -90,7 +90,7 @@ class StemifyViewModel: ObservableObject {
             onProgress: { [weak self] progress in
                 guard let self else { return }
                 self.progress = progress
-                self.status = String(format: "Processing... %.1f%%", progress * 100.0)
+                self.status = "Processing..."
 
                 // Estimate remaining time
                 if progress > 0.05 { // Start estimating after 5%

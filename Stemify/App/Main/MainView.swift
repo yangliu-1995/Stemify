@@ -127,6 +127,7 @@ struct MainView: View {
                     Spacer(minLength: 50)
                 }
                 .frame(maxWidth: 500)
+                .frame(maxWidth: .infinity)
                 .padding(.top, 20)
             }
             .navigationTitle("Audio Processor")

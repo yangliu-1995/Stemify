@@ -58,6 +58,7 @@ struct ProcessingButton: View {
                     .foregroundColor(.white)
                 }
             }
+            .clipShape(buttonShape)
         }
         .disabled(!isEnabled && !isProcessing)
         .animation(.easeInOut(duration: 0.3), value: isProcessing)
@@ -85,6 +86,14 @@ struct ProcessingButton: View {
         // Assuming button width is roughly screen width - 80 (40 padding on each side)
         let maxWidth = UIScreen.main.bounds.width - 80
         return maxWidth * CGFloat(progress)
+    }
+    
+    private var buttonShape: AnyShape {
+        if #available(iOS 26.0, *) {
+            AnyShape(Capsule())
+        } else {
+            AnyShape(RoundedRectangle(cornerRadius: 8))
+        }
     }
 }
 

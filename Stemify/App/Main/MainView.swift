@@ -54,13 +54,14 @@ struct MainView: View {
                                 Text("Select Audio File")
                             }
                             .font(.system(size: 16, weight: .medium))
-                            .foregroundColor(.blue)
+                            .foregroundColor(viewModel.isProcessing ? .secondary : .blue)
                             .frame(maxWidth: .infinity)
                             .frame(height: 44)
-                            .background(Color.blue.opacity(0.1))
+                            .background(viewModel.isProcessing ? Color.gray.opacity(0.1) : Color.blue.opacity(0.1))
                             .clipShape(fileButtonShape)
                         }
                         .disabled(viewModel.isProcessing)
+                        .opacity(viewModel.isProcessing ? 0.6 : 1.0)
                     }
                     .padding(20)
                     .background(Color(.systemGray6))
@@ -92,17 +93,18 @@ struct MainView: View {
                                 HStack {
                                     Text(viewModel.selectedModel.name)
                                         .font(.system(size: 16, weight: .medium))
-                                        .foregroundColor(.primary)
+                                        .foregroundColor(viewModel.isProcessing ? .secondary : .primary)
                                     Image(systemName: "chevron.down")
                                         .font(.system(size: 12, weight: .medium))
                                         .foregroundColor(.secondary)
                                 }
                                 .padding(.horizontal, 12)
                                 .padding(.vertical, 8)
-                                .background(Color(.systemGray5))
+                                .background(viewModel.isProcessing ? Color(.systemGray4) : Color(.systemGray5))
                                 .clipShape(modelButtonShape)
                             }
                             .disabled(viewModel.isProcessing)
+                            .opacity(viewModel.isProcessing ? 0.6 : 1.0)
                         }
 
                         // Processing button or progress

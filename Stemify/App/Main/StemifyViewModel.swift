@@ -37,12 +37,22 @@ class StemifyViewModel: ObservableObject {
         }
     }
 
-    // Create project folder name with timestamp
-    private func createProjectFolderName() -> String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyyMMdd_HHmmss"
-        let timestamp = formatter.string(from: Date())
-        return "SpleeterProject_\(timestamp)"
+    // Create project folder name based on selected file
+    private func createProjectFolderName(for fileURL: URL) -> String {
+        let fileName = fileURL.deletingPathExtension().lastPathComponent
+        let baseName = "\(fileName).stemifyproj"
+        
+        let documentsPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+        var finalName = baseName
+        var counter = 1
+        
+        // Check if folder exists and add number suffix if needed
+        while FileManager.default.fileExists(atPath: documentsPath.appendingPathComponent(finalName).path) {
+            finalName = "\(fileName)(\(counter)).stemifyproj"
+            counter += 1
+        }
+        
+        return finalName
     }
 
     // Process audio file
@@ -56,7 +66,7 @@ class StemifyViewModel: ObservableObject {
 
         // Create project folder
         let documentsPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-        let projectFolderName = createProjectFolderName()
+        let projectFolderName = createProjectFolderName(for: fileURL)
         let projectPath = documentsPath.appendingPathComponent(projectFolderName)
 
         do {

@@ -73,7 +73,7 @@ struct ProjectView: View {
             for url in contents {
                 let resourceValues = try url.resourceValues(forKeys: [.isDirectoryKey, .creationDateKey])
                 
-                if resourceValues.isDirectory == true && url.lastPathComponent.hasPrefix("SpleeterProject_") {
+                if resourceValues.isDirectory == true && url.lastPathComponent.hasSuffix(".stemifyproj") {
                     let folder = ProjectFolder(
                         name: url.lastPathComponent,
                         path: url.path,

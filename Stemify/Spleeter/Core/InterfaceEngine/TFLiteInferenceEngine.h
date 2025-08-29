@@ -16,8 +16,6 @@
 
 namespace spleeter {
 
-using Waveforms = std::vector<Waveform>;
-
 class TFLiteInferenceEngine {
 public:
     TFLiteInferenceEngine(const InferenceEngineParameters& params);

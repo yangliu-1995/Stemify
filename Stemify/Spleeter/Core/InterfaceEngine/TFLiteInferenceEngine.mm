@@ -111,18 +111,35 @@ void TFLiteInferenceEngine::UpdateTensors() {
 void TFLiteInferenceEngine::UpdateOutputs() {
     results_.clear();
 
-    for (int i = 0; i < TfLiteInterpreterGetOutputTensorCount(interpreter_); i++) {
-        TfLiteTensor* output_tensor = (TfLiteTensor *)TfLiteInterpreterGetOutputTensor(interpreter_, i);
-        if (!output_tensor) {
-            std::cerr << "Failed to get output tensor at index " << i << std::endl;
-            continue;
+    // Get tensors in the order specified by output_tensor_names_ (mimics C++ version behavior)
+    for (size_t name_idx = 0; name_idx < output_tensor_names_.size(); name_idx++) {
+        const std::string& tensor_name = output_tensor_names_[name_idx];
+        
+        // Find the tensor with the specified name among all output tensors
+        TfLiteTensor* found_tensor = nullptr;
+        for (int i = 0; i < TfLiteInterpreterGetOutputTensorCount(interpreter_); i++) {
+            TfLiteTensor* output_tensor = (TfLiteTensor *)TfLiteInterpreterGetOutputTensor(interpreter_, i);
+            if (!output_tensor) continue;
+            
+            // Compare tensor names
+            const char* current_name = TfLiteTensorName(output_tensor);
+            if (current_name && tensor_name == current_name) {
+                found_tensor = output_tensor;
+                std::cout << "Found tensor '" << tensor_name << "' at model index " << i 
+                         << " -> results_[" << name_idx << "]" << std::endl;
+                break;
+            }
         }
-
-        Waveform waveform = ConvertToWaveform(output_tensor);
-        results_.push_back(waveform);
+        
+        if (found_tensor) {
+            Waveform waveform = ConvertToWaveform(found_tensor);
+            results_.push_back(waveform);
+        } else {
+            std::cerr << "Error: Could not find tensor '" << tensor_name << "'" << std::endl;
+        }
     }
 
-    std::cout << results_ << std::endl;
+    std::cout << "UpdateOutputs completed: " << results_.size() << " tensors processed" << std::endl;
 }
 
 Waveform TFLiteInferenceEngine::ConvertToWaveform(TfLiteTensor *tensor) {

@@ -15,7 +15,9 @@ struct TrackControlView: View {
     
     @State private var volume: Float
     @State private var isMuted: Bool
-    
+
+    @Environment(\.cardCornerRadius) private var cardCornerRadius
+
     init(track: AudioTrack, progress: Double = 0.0, onVolumeChange: @escaping (Float) -> Void, onMuteToggle: @escaping (Bool) -> Void) {
         self.track = track
         self.progress = progress
@@ -40,7 +42,7 @@ struct TrackControlView: View {
                 ShareLink(item: track.url) {
                     Image(systemName: "square.and.arrow.down")
                         .font(.title3)
-                        .foregroundColor(.blue)
+                        .foregroundColor(Color(.label))
                 }
                 
                 // Mute Button
@@ -50,7 +52,7 @@ struct TrackControlView: View {
                 }) {
                     Image(systemName: isMuted ? "speaker.slash.fill" : "speaker.2.fill")
                         .font(.title3)
-                        .foregroundColor(isMuted ? .red : .blue)
+                        .foregroundColor(isMuted ? .red : Color(.label))
                 }
             }
             
@@ -88,8 +90,7 @@ struct TrackControlView: View {
         }
         .padding()
         .background(Color(.systemGray6))
-        .cornerRadius(8)
-        .shadow(color: .black.opacity(0.1), radius: 2, x: 0, y: 1)
+        .cornerRadius(cardCornerRadius)
     }
 }
 

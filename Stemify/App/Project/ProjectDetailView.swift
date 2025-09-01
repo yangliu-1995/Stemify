@@ -11,7 +11,8 @@ struct ProjectDetailView: View {
     let projectFolder: ProjectFolder
     @State private var audioFiles: [URL] = []
     @State private var isLoading = true
-    
+    @Environment(\.cardCornerRadius) private var cardCornerRadius
+
     private var formattedDate: String {
         let formatter = DateFormatter()
         formatter.dateStyle = .full
@@ -27,7 +28,7 @@ struct ProjectDetailView: View {
                     HStack {
                         Image(systemName: "waveform")
                             .font(.largeTitle)
-                            .foregroundColor(.blue)
+                            .foregroundColor(Color(.label))
                         
                         VStack(alignment: .leading, spacing: 4) {
                             Text("Created: \(formattedDate)")
@@ -53,8 +54,8 @@ struct ProjectDetailView: View {
                 }
                 .padding()
                 .background(Color(.systemGray6))
-                .cornerRadius(12)
-                
+                .cornerRadius(cardCornerRadius)
+
                 // Multi-Track Player Section
                 if isLoading {
                     ProgressView("Loading audio files...")

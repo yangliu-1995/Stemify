@@ -32,7 +32,7 @@ struct ProcessingButton: View {
                     // Progress background
                     HStack {
                         Rectangle()
-                            .fill(Color.blue)
+                            .fill(Color(.label))
                             .frame(width: progressWidth)
                         Spacer(minLength: 0)
                     }
@@ -66,9 +66,9 @@ struct ProcessingButton: View {
     
     private var buttonBackgroundColor: Color {
         if isProcessing {
-            return Color.blue.opacity(0.3)
+            return Color(.label).opacity(0.3)
         } else if isEnabled {
-            return Color.blue
+            return Color(.label)
         } else {
             return Color(.systemGray4)
         }

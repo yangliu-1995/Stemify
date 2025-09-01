@@ -21,7 +21,7 @@ struct ProjectFolderRow: View {
         VStack(alignment: .leading, spacing: 4) {
             HStack {
                 Image(systemName: "waveform")
-                    .foregroundColor(.blue)
+                    .foregroundColor(Color(.label))
                     .font(.title2)
                 
                 VStack(alignment: .leading, spacing: 2) {

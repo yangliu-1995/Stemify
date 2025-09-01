@@ -10,7 +10,8 @@ import SwiftUI
 struct MultiTrackPlayerView: View {
     @StateObject private var player = MultiTrackAudioPlayer()
     let audioUrls: [URL]
-    
+    @Environment(\.cardCornerRadius) private var cardCornerRadius
+
     var body: some View {
         VStack(spacing: 16) {
             // Main Player Controls
@@ -35,21 +36,21 @@ struct MultiTrackPlayerView: View {
                             player.seek(to: newValue)
                         }
                     ), in: 0...max(1, player.duration))
-                    .accentColor(.blue)
+                    .accentColor(Color(.label))
 
                 }
                 
                 // Play/Pause Button with Skip Controls
                 HStack(spacing: 20) {
+                    Spacer()
                     // Rewind 15 seconds
                     Button(action: {
                         player.seek(to: max(0, player.currentTime - 15))
                     }) {
                         Image(systemName: "gobackward.15")
                             .font(.system(size: 30))
-                            .foregroundColor(.blue)
                     }
-                    
+                    Spacer()
                     Button(action: {
                         if player.isPlaying {
                             player.pause()
@@ -57,24 +58,23 @@ struct MultiTrackPlayerView: View {
                             player.play()
                         }
                     }) {
-                        Image(systemName: player.isPlaying ? "pause.circle.fill" : "play.circle.fill")
+                        Image(systemName: player.isPlaying ? "pause.fill" : "play.fill")
                             .font(.system(size: 50))
-                            .foregroundColor(.blue)
                     }
-                    
+                    Spacer()
                     // Fast forward 15 seconds
                     Button(action: {
                         player.seek(to: min(player.duration, player.currentTime + 15))
                     }) {
                         Image(systemName: "goforward.15")
                             .font(.system(size: 30))
-                            .foregroundColor(.blue)
                     }
+                    Spacer()
                 }
             }
             .padding()
             .background(Color(.systemGray6))
-            .cornerRadius(12)
+            .cornerRadius(cardCornerRadius)
             
             // Individual Track Controls
             LazyVStack(spacing: 12) {

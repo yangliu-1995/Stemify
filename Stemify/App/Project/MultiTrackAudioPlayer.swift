@@ -125,7 +125,7 @@ class MultiTrackAudioPlayer: ObservableObject {
             audioEngine.prepare()
         }
         
-        DispatchQueue.main.async {
+        Task { @MainActor in
             self.tracks = newTracks
             self.duration = maxDuration
             self.currentTime = 0
@@ -161,10 +161,10 @@ class MultiTrackAudioPlayer: ObservableObject {
             startTime = CACurrentMediaTime() - pausedTime
             startDisplayLink()
             
-            DispatchQueue.main.async {
+            Task { @MainActor in
                 self.isPlaying = true
             }
-            
+
         } catch {
             print("Failed to start audio engine: \(error)")
         }
@@ -177,8 +177,7 @@ class MultiTrackAudioPlayer: ObservableObject {
         
         pausedTime = currentTime
         stopDisplayLink()
-        
-        DispatchQueue.main.async {
+        Task { @MainActor in
             self.isPlaying = false
         }
     }
@@ -198,7 +197,7 @@ class MultiTrackAudioPlayer: ObservableObject {
         stop()
         pausedTime = min(max(time, 0), duration)
         
-        DispatchQueue.main.async {
+        Task { @MainActor in
             self.currentTime = self.pausedTime
         }
         
@@ -212,7 +211,7 @@ class MultiTrackAudioPlayer: ObservableObject {
         
         mixerNode.outputVolume = volume
         
-        DispatchQueue.main.async {
+        Task { @MainActor in
             if let index = self.tracks.firstIndex(where: { $0.id == trackId }) {
                 self.tracks[index].volume = volume
             }
@@ -224,7 +223,7 @@ class MultiTrackAudioPlayer: ObservableObject {
         
         mixerNode.outputVolume = isMuted ? 0.0 : (tracks.first(where: { $0.id == trackId })?.volume ?? 1.0)
         
-        DispatchQueue.main.async {
+        Task { @MainActor in
             if let index = self.tracks.firstIndex(where: { $0.id == trackId }) {
                 self.tracks[index].isMuted = isMuted
             }
@@ -286,7 +285,7 @@ class MultiTrackAudioPlayer: ObservableObject {
         let elapsed = CACurrentMediaTime() - startTime
         let newTime = min(elapsed, duration)
         
-        DispatchQueue.main.async {
+        Task { @MainActor in
             self.currentTime = newTime
         }
         

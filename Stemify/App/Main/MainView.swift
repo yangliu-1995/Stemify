@@ -11,6 +11,7 @@ import UniformTypeIdentifiers
 struct MainView: View {
     @StateObject private var viewModel = StemifyViewModel()
     @State private var showingFileImporter = false
+    @Environment(\.cardCornerRadius) private var cardCornerRadius
 
     private var fileButtonShape: AnyShape {
         if #available(iOS 26.0, *) {
@@ -25,14 +26,6 @@ struct MainView: View {
             AnyShape(Capsule())
         } else {
             AnyShape(RoundedRectangle(cornerRadius: 8))
-        }
-    }
-    
-    private var cardCornerRadius: CGFloat {
-        if #available(iOS 26.0, *) {
-            return 24
-        } else {
-            return 12
         }
     }
 
@@ -54,10 +47,10 @@ struct MainView: View {
                                 Text("Select Audio File")
                             }
                             .font(.system(size: 16, weight: .medium))
-                            .foregroundColor(viewModel.isProcessing ? .secondary : .blue)
+                            .foregroundColor(viewModel.isProcessing ? .secondary : Color(.label))
                             .frame(maxWidth: .infinity)
                             .frame(height: 44)
-                            .background(viewModel.isProcessing ? Color.gray.opacity(0.1) : Color.blue.opacity(0.1))
+                            .background(viewModel.isProcessing ? Color.gray.opacity(0.1) : Color(.label).opacity(0.1))
                             .clipShape(fileButtonShape)
                         }
                         .disabled(viewModel.isProcessing)

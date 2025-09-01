@@ -44,7 +44,7 @@ struct WaveformView: View {
                             let barHeight = max(2, CGFloat(amplitude) * 28)
                             
                             RoundedRectangle(cornerRadius: 0.5)
-                                .fill(isPlayed ? Color.blue : Color.gray.opacity(0.4))
+                                .fill(isPlayed ? Color(.label) : Color.gray.opacity(0.4))
                                 .frame(
                                     width: barWidth,
                                     height: barHeight

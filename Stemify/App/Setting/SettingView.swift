@@ -20,7 +20,8 @@ enum OutputFormat: String, CaseIterable {
 
 struct SettingView: View {
     @AppStorage("outputFormat") private var selectedOutputFormat: OutputFormat = .mp3
-    
+    @Environment(\.cardCornerRadius) private var cardCornerRadius
+
     var body: some View {
         NavigationStack {
             VStack(spacing: 30) {
@@ -70,7 +71,7 @@ struct SettingView: View {
                 }
                 .padding(20)
                 .background(Color(.systemGray6))
-                .cornerRadius(12)
+                .cornerRadius(cardCornerRadius)
                 .padding(.horizontal, 20)
                 
                 Spacer()

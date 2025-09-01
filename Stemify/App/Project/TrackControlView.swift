@@ -9,14 +9,16 @@ import SwiftUI
 
 struct TrackControlView: View {
     let track: AudioTrack
+    let progress: Double // 播放进度 0.0 - 1.0
     let onVolumeChange: (Float) -> Void
     let onMuteToggle: (Bool) -> Void
     
     @State private var volume: Float
     @State private var isMuted: Bool
     
-    init(track: AudioTrack, onVolumeChange: @escaping (Float) -> Void, onMuteToggle: @escaping (Bool) -> Void) {
+    init(track: AudioTrack, progress: Double = 0.0, onVolumeChange: @escaping (Float) -> Void, onMuteToggle: @escaping (Bool) -> Void) {
         self.track = track
+        self.progress = progress
         self.onVolumeChange = onVolumeChange
         self.onMuteToggle = onMuteToggle
         self._volume = State(initialValue: track.volume)
@@ -27,16 +29,19 @@ struct TrackControlView: View {
         VStack(alignment: .leading, spacing: 8) {
             // Track Header
             HStack {
-                Image(systemName: "waveform")
-                    .foregroundColor(.blue)
-                    .font(.caption)
-                
                 Text(track.name)
                     .font(.subheadline)
                     .fontWeight(.medium)
                     .lineLimit(1)
                 
                 Spacer()
+                
+                // Share Button
+                ShareLink(item: track.url) {
+                    Image(systemName: "square.and.arrow.up")
+                        .font(.title3)
+                        .foregroundColor(.blue)
+                }
                 
                 // Mute Button
                 Button(action: {
@@ -48,6 +53,12 @@ struct TrackControlView: View {
                         .foregroundColor(isMuted ? .red : .blue)
                 }
             }
+            
+            // Waveform Display
+            WaveformView(audioURL: track.url, progress: progress)
+                .frame(height: 40)
+                .background(Color(.systemGray6))
+                .cornerRadius(6)
             
             // Volume Control
             HStack {
@@ -84,6 +95,7 @@ struct TrackControlView_Previews: PreviewProvider {
     static var previews: some View {
         TrackControlView(
             track: AudioTrack(url: URL(fileURLWithPath: "/path/to/sample.mp3")),
+            progress: 0.3,
             onVolumeChange: { _ in },
             onMuteToggle: { _ in }
         )

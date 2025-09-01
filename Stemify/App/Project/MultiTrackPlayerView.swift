@@ -81,6 +81,7 @@ struct MultiTrackPlayerView: View {
                 ForEach(player.tracks) { track in
                     TrackControlView(
                         track: track,
+                        progress: player.duration > 0 ? player.currentTime / player.duration : 0.0,
                         onVolumeChange: { volume in
                             player.setVolume(for: track.id, volume: volume)
                         },

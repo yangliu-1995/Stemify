@@ -57,6 +57,14 @@ class StemifyViewModel: ObservableObject {
 
     // Process audio file
     func processAudio() {
+        // Check if already processing
+        if isProcessing {
+            alertTitle = "Processing in Progress"
+            alertMessage = "Audio processing is already in progress. Please wait for it to complete."
+            showAlert = true
+            return
+        }
+        
         guard let fileURL = selectedFileURL else {
             alertTitle = "Error"
             alertMessage = "Please select an audio file first"

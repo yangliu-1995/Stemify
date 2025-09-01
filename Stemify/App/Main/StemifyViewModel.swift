@@ -89,10 +89,17 @@ class StemifyViewModel: ObservableObject {
         timeInfo = "Preparing..."
         progressStart = Date().timeIntervalSince1970
 
+        // Decode the project path to remove URL encoding before passing to FFmpeg
+        let originalPath = projectPath.path()
+        let decodedProjectPath = originalPath.removingPercentEncoding ?? originalPath
+        
+        print("📁 Original project path: \(originalPath)")
+        print("📁 Decoded project path: \(decodedProjectPath)")
+        
         spleeter.processFile(
             at: fileURL.path,
             using: selectedModel, // Use selected model
-            saveAt: projectPath.path(),
+            saveAt: decodedProjectPath,
             onStart: { [weak self] in
                 self?.status = "Starting..."
                 self?.timeInfo = "Preparing..."

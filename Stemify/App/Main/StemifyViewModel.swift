@@ -92,10 +92,12 @@ class StemifyViewModel: ObservableObject {
         // Decode the project path to remove URL encoding before passing to FFmpeg
         let originalPath = projectPath.path()
         let decodedProjectPath = originalPath.removingPercentEncoding ?? originalPath
-        
+
+#if DEBUG
         print("📁 Original project path: \(originalPath)")
         print("📁 Decoded project path: \(decodedProjectPath)")
-        
+#endif
+
         spleeter.processFile(
             at: fileURL.path,
             using: selectedModel, // Use selected model

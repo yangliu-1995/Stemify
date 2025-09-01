@@ -38,7 +38,7 @@ struct TrackControlView: View {
                 
                 // Share Button
                 ShareLink(item: track.url) {
-                    Image(systemName: "square.and.arrow.up")
+                    Image(systemName: "square.and.arrow.down")
                         .font(.title3)
                         .foregroundColor(.blue)
                 }

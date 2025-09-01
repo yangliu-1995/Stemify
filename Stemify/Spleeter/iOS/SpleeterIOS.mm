@@ -19,6 +19,7 @@
     std::shared_ptr<spleeter::AudioProcessor> _audioProcessor;
     std::shared_ptr<spleeter::AudioProcessorDelegateImp> _delegateImp;
     SpleeterModel _model;
+    NSString* _format;
 }
 
 @property (nonatomic, strong) void(^onStartHandler)();
@@ -51,11 +52,12 @@
     return self;
 }
 
-- (void)processFileAt:(NSString *)path usingModel:(SpleeterModel)model saveAt:(NSString *)folder onStart:(void (^)())startHandler onProgress:(void (^)(float))progressHandler onCompletion:(void (^)(BOOL, NSError * _Nullable))completionHandler {
+- (void)processFileAt:(NSString *)path usingModel:(SpleeterModel)model format:(NSString*)format saveAt:(NSString *)folder onStart:(void (^)())startHandler onProgress:(void (^)(float))progressHandler onCompletion:(void (^)(BOOL, NSError * _Nullable))completionHandler {
     _model = model;
     _onStartHandler = startHandler;
     _onProgressHandler = progressHandler;
     _onCompletionHandler = completionHandler;
+    _format = [format copy];
     spleeter::InferenceEngineParameters _2StemsInferenceEngineParams{
         [[[NSBundle mainBundle] pathForResource:@"2stems" ofType:@"tflite"] UTF8String],
         "waveform",
@@ -104,7 +106,7 @@
 
         for (size_t i = 0; i < waveforms.size() && i < track_names.size(); ++i) {
             NSString *trackName = [NSString stringWithUTF8String:track_names[i].c_str()];
-            NSString *trackPath = [folder stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.mp3", trackName]];
+            NSString *trackPath = [folder stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.%@", trackName, self->_format]];
 
             self->_audioAdapter->Save(trackPath.UTF8String, waveforms[i], 44100, 128000);
 
@@ -118,7 +120,6 @@
 - (float)getOptimalWindowSeconds:(size_t)numTracks {
     NSProcessInfo *processInfo = [NSProcessInfo processInfo];
     unsigned long long totalMemory = processInfo.physicalMemory;
-    BOOL isIOSAppRunOnMac = [processInfo isiOSAppOnMac];
 
     struct utsname systemInfo;
     uname(&systemInfo);

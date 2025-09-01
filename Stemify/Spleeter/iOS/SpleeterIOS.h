@@ -22,6 +22,7 @@ NS_SWIFT_NAME(Spleeter)
 
 - (void)processFileAt:(NSString*)path
            usingModel:(SpleeterModel)model
+               format:(NSString*)format
                saveAt:(NSString*)folder
               onStart:(void(^)(void))startHandler
            onProgress:(void(^)(float))progressHandler

@@ -214,8 +214,7 @@ void FFmpegAudioAdapter::Save(const std::string& path,
     audio_codec_context->codec_id = format_context->audio_codec_id;
     audio_codec_context->codec_type = AVMEDIA_TYPE_AUDIO;
     audio_codec_context->sample_fmt = AV_SAMPLE_FMT_FLTP;
-    audio_codec_context->sample_rate =
-        audio_codec->supported_samplerates ? audio_codec->supported_samplerates[0] : sample_rate;
+    audio_codec_context->sample_rate = sample_rate;
     AVChannelLayout stereo_layout = AV_CHANNEL_LAYOUT_STEREO;
     av_channel_layout_copy(&audio_codec_context->ch_layout, &stereo_layout);
     audio_codec_context->bit_rate = bitrate;

@@ -58,7 +58,7 @@ struct WaveformView: View {
                 viewWidth = geometry.size.width
                 loadWaveform()
             }
-            .onChange(of: geometry.size.width) { newWidth in
+            .onChange(of: geometry.size.width) { _, newWidth in
                 if abs(newWidth - viewWidth) > 10 { // Avoid frequent updates
                     viewWidth = newWidth
                     loadWaveform()

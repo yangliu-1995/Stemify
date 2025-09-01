@@ -1,6 +1,7 @@
 import Foundation
 import Combine
 import UniformTypeIdentifiers
+import SwiftUI
 
 @MainActor
 class StemifyViewModel: ObservableObject {
@@ -15,6 +16,9 @@ class StemifyViewModel: ObservableObject {
     @Published var alertTitle: String = ""
     @Published var alertMessage: String = ""
     @Published var selectedModel: Spleeter.Model = .model2Stems // Default model
+    
+    // User selected output format from settings
+    @AppStorage("outputFormat") private var selectedOutputFormat: OutputFormat = .mp3
 
     private var selectedFileURL: URL?
     private var progressStart: TimeInterval = 0.0
@@ -109,6 +113,7 @@ class StemifyViewModel: ObservableObject {
         spleeter.processFile(
             at: fileURL.path,
             using: selectedModel, // Use selected model
+            format: selectedOutputFormat.rawValue, // Use user selected format
             saveAt: decodedProjectPath,
             onStart: { [weak self] in
                 self?.status = "Starting..."

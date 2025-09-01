@@ -20,7 +20,7 @@ struct ProjectDetailView: View {
     }
     
     var body: some View {
-        NavigationView {
+        ScrollView {
             VStack(alignment: .leading, spacing: 20) {
                 // Project Info Section
                 VStack(alignment: .leading, spacing: 12) {
@@ -30,10 +30,6 @@ struct ProjectDetailView: View {
                             .foregroundColor(.blue)
                         
                         VStack(alignment: .leading, spacing: 4) {
-                            Text(projectFolder.name)
-                                .font(.title2)
-                                .fontWeight(.bold)
-                            
                             Text("Created: \(formattedDate)")
                                 .font(.caption)
                                 .foregroundColor(.secondary)
@@ -59,65 +55,31 @@ struct ProjectDetailView: View {
                 .background(Color(.systemGray6))
                 .cornerRadius(12)
                 
-                // Audio Files Section
-                VStack(alignment: .leading, spacing: 12) {
-                    Text("Audio Files")
-                        .font(.headline)
-                        .padding(.horizontal)
-                    
-                    if isLoading {
-                        ProgressView("Loading audio files...")
-                            .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    } else if audioFiles.isEmpty {
-                        VStack(spacing: 12) {
-                            Image(systemName: "music.note")
-                                .font(.system(size: 40))
-                                .foregroundColor(.gray)
-                            
-                            Text("No audio files found")
-                                .font(.body)
-                                .foregroundColor(.secondary)
-                        }
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    } else {
-                        List(audioFiles, id: \.self) { audioFile in
-                            HStack {
-                                Image(systemName: "waveform")
-                                    .foregroundColor(.blue)
-                                
-                                VStack(alignment: .leading, spacing: 2) {
-                                    Text(audioFile.lastPathComponent)
-                                        .font(.body)
-                                        .lineLimit(1)
-                                    
-                                    Text(audioFile.pathExtension.uppercased())
-                                        .font(.caption)
-                                        .foregroundColor(.secondary)
-                                }
-                                
-                                Spacer()
-                                
-                                Button(action: {
-                                    playAudioFile(audioFile)
-                                }) {
-                                    Image(systemName: "play.circle")
-                                        .font(.title2)
-                                        .foregroundColor(.blue)
-                                }
-                            }
-                            .padding(.vertical, 4)
-                        }
+                // Multi-Track Player Section
+                if isLoading {
+                    ProgressView("Loading audio files...")
+                        .frame(maxWidth: .infinity, minHeight: 200)
+                } else if audioFiles.isEmpty {
+                    VStack(spacing: 12) {
+                        Image(systemName: "music.note")
+                            .font(.system(size: 40))
+                            .foregroundColor(.gray)
+                        
+                        Text("No audio files found")
+                            .font(.body)
+                            .foregroundColor(.secondary)
                     }
+                    .frame(maxWidth: .infinity, minHeight: 200)
+                } else {
+                    MultiTrackPlayerView(audioUrls: audioFiles)
                 }
-                
-                Spacer()
             }
             .padding()
-            .navigationTitle("Project Details")
-            .navigationBarTitleDisplayMode(.inline)
-            .onAppear {
-                loadAudioFiles()
-            }
+        }
+        .navigationTitle(projectFolder.name)
+        .navigationBarTitleDisplayMode(.inline)
+        .onAppear {
+            loadAudioFiles()
         }
     }
     
@@ -153,10 +115,7 @@ struct ProjectDetailView: View {
         }
     }
     
-    private func playAudioFile(_ audioFile: URL) {
-        // TODO: Implement audio playback functionality
-        print("Playing audio file: \(audioFile.lastPathComponent)")
-    }
+    // Audio playback is now handled by MultiTrackPlayerView
 }
 
 struct ProjectDetailView_Previews: PreviewProvider {

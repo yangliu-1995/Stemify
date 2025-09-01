@@ -59,7 +59,7 @@
     spleeter::InferenceEngineParameters _2StemsInferenceEngineParams{
         [[[NSBundle mainBundle] pathForResource:@"2stems" ofType:@"tflite"] UTF8String],
         "waveform",
-        {"strided_slice_23", "strided_slice_13"},
+        {"strided_slice_13", "strided_slice_23"},
         "spleeter:2stems"};
 
     spleeter::InferenceEngineParameters _5StemsInferenceEngineParams{
@@ -129,7 +129,7 @@
     if (numTracks == 2) {
         baseWindowSeconds = 28.0f;
     } else if (numTracks == 5) {
-        baseWindowSeconds = 20.0f;
+        baseWindowSeconds = 12.0f;
     } else {
         baseWindowSeconds = std::max(6.0f, 12.0f - (numTracks - 2) * 1.0f);
     }
@@ -149,13 +149,6 @@
         memoryFactor = 0.75f;
     } else {
         memoryFactor = 0.5f;
-    }
-
-    if ([deviceModel containsString:@"iPhone16"] ||
-        [deviceModel containsString:@"iPhone15"] ||
-        [deviceModel containsString:@"iPhone14"] ||
-        ([deviceModel containsString:@"iPad"] && !isIOSAppRunOnMac)) {
-        memoryFactor *= 1.2f;
     }
 
     float finalWindowSeconds = baseWindowSeconds * memoryFactor;

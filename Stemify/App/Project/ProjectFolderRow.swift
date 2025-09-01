@@ -20,7 +20,7 @@ struct ProjectFolderRow: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
             HStack {
-                Image(systemName: "folder.fill")
+                Image(systemName: "waveform")
                     .foregroundColor(.blue)
                     .font(.title2)
                 
@@ -29,7 +29,7 @@ struct ProjectFolderRow: View {
                         .font(.headline)
                         .lineLimit(1)
                     
-                    Text("\(folder.fileCount) files")
+                    Text("\(folder.fileCount) tracks")
                         .font(.caption)
                         .foregroundColor(.secondary)
                 }

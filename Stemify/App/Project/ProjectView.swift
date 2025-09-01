@@ -19,7 +19,7 @@ struct ProjectView: View {
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else if projectFolders.isEmpty {
                 VStack(spacing: 20) {
-                    Image(systemName: "folder.badge.plus")
+                    Image(systemName: "waveform")
                         .font(.system(size: 60))
                         .foregroundColor(.gray)
 
@@ -36,10 +36,10 @@ struct ProjectView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
                 List(projectFolders) { folder in
-                    ProjectFolderRow(folder: folder)
-                        .onTapGesture {
-                            openFolder(folder)
-                        }
+                    NavigationLink(destination: ProjectDetailView(projectFolder: folder)
+                        .toolbar(.hidden, for: .tabBar)) {
+                        ProjectFolderRow(folder: folder)
+                    }
                 }
                 .refreshable {
                     await loadProjectFolders()
@@ -74,8 +74,9 @@ struct ProjectView: View {
                 let resourceValues = try url.resourceValues(forKeys: [.isDirectoryKey, .creationDateKey])
                 
                 if resourceValues.isDirectory == true && url.lastPathComponent.hasSuffix(".stemifyproj") {
+                    let name = url.deletingPathExtension().lastPathComponent
                     let folder = ProjectFolder(
-                        name: url.lastPathComponent,
+                        name: name,
                         path: url.path,
                         creationDate: resourceValues.creationDate ?? Date(),
                         fileCount: countFilesInFolder(url)
@@ -103,19 +104,7 @@ struct ProjectView: View {
         }
     }
     
-    private func openFolder(_ folder: ProjectFolder) {
-        let url = URL(fileURLWithPath: folder.path)
-        
-        #if targetEnvironment(simulator)
-        // Print path on simulator
-        print("Project folder path: \(folder.path)")
-        #else
-        // Try to open with Files app on real device
-        if UIApplication.shared.canOpenURL(url) {
-            UIApplication.shared.open(url)
-        }
-        #endif
-    }
+    // Removed openFolder function as navigation is now handled by NavigationLink
 }
 
 

@@ -10,7 +10,7 @@ import AVFoundation
 
 struct WaveformView: View {
     let audioURL: URL
-    let progress: Double // 播放进度 0.0 - 1.0
+    let progress: Double // Playback progress 0.0 - 1.0
     @State private var waveformData: [Float] = []
     @State private var isLoading = true
     @State private var viewWidth: CGFloat = 0
@@ -27,17 +27,17 @@ struct WaveformView: View {
         GeometryReader { geometry in
             ZStack {
                 if isLoading {
-                    // 加载状态
+                    // Loading state
                     HStack(spacing: barSpacing) {
-                        ForEach(0..<min(20, sampleCount), id: \.self) { _ in
+                        ForEach(0..<sampleCount, id: \.self) { _ in
                             RoundedRectangle(cornerRadius: 1)
                                 .fill(Color.gray.opacity(0.3))
-                                .frame(width: barWidth, height: CGFloat.random(in: 4...20))
+                                .frame(width: barWidth, height: 4)
                         }
                     }
-                    .frame(height: 30)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
                 } else {
-                    // 波形显示
+                    // Waveform display
                     HStack(alignment: .center, spacing: barSpacing) {
                         ForEach(Array(waveformData.enumerated()), id: \.offset) { index, amplitude in
                             let isPlayed = Double(index) / Double(waveformData.count) <= progress
@@ -59,7 +59,7 @@ struct WaveformView: View {
                 loadWaveform()
             }
             .onChange(of: geometry.size.width) { newWidth in
-                if abs(newWidth - viewWidth) > 10 { // 避免频繁更新
+                if abs(newWidth - viewWidth) > 10 { // Avoid frequent updates
                     viewWidth = newWidth
                     loadWaveform()
                 }
@@ -78,7 +78,7 @@ struct WaveformView: View {
             } catch {
                 print("Failed to generate waveform: \(error)")
                 await MainActor.run {
-                    // 生成默认波形数据
+                    // Generate default waveform data
                     self.waveformData = (0..<sampleCount).map { _ in Float.random(in: 0.1...1.0) }
                     self.isLoading = false
                 }
@@ -106,6 +106,17 @@ struct WaveformView: View {
                         return
                     }
                     
+                    // First find the global maximum amplitude
+                    var globalMaxAmplitude: Float = 0
+                    for i in 0..<Int(frameCount) {
+                        globalMaxAmplitude = max(globalMaxAmplitude, abs(channelData[i]))
+                    }
+                    
+                    // Avoid division by zero error
+                    if globalMaxAmplitude == 0 {
+                        globalMaxAmplitude = 1.0
+                    }
+                    
                     let samplesPerPoint = Int(frameCount) / sampleCount
                     var waveform: [Float] = []
                     
@@ -118,7 +129,9 @@ struct WaveformView: View {
                             maxAmplitude = max(maxAmplitude, abs(channelData[j]))
                         }
                         
-                        waveform.append(maxAmplitude)
+                        // Normalize as a proportion relative to the global maximum
+                        let normalizedAmplitude = maxAmplitude / globalMaxAmplitude
+                        waveform.append(normalizedAmplitude)
                     }
                     
                     continuation.resume(returning: waveform)

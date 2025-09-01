@@ -66,11 +66,13 @@ struct TrackControlView: View {
                     .font(.caption)
                     .foregroundColor(.secondary)
                 
-                Slider(value: $volume, in: 0...1) { editing in
-                    if !editing {
-                        onVolumeChange(volume)
+                Slider(value: Binding(
+                    get: { volume },
+                    set: { newValue in
+                        volume = newValue
+                        onVolumeChange(newValue)
                     }
-                }
+                ), in: 0...1)
                 .disabled(isMuted)
                 .opacity(isMuted ? 0.5 : 1.0)
                 
@@ -85,7 +87,7 @@ struct TrackControlView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color(.systemGray6))
         .cornerRadius(8)
         .shadow(color: .black.opacity(0.1), radius: 2, x: 0, y: 1)
     }

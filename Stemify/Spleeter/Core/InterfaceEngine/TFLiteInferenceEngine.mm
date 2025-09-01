@@ -73,7 +73,7 @@ void TFLiteInferenceEngine::UpdateInput(const Waveform& waveform) {
 
     // Resize input tensor
     std::vector<int> dims = {waveform.nb_frames, waveform.nb_channels};
-    if (TfLiteInterpreterResizeInputTensor(interpreter_, 0, dims.data(), dims.size()) != kTfLiteOk) {
+    if (TfLiteInterpreterResizeInputTensor(interpreter_, 0, dims.data(), static_cast<int>(dims.size())) != kTfLiteOk) {
         std::cerr << "Failed to resize input tensor" << std::endl;
         return;
     }

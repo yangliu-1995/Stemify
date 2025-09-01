@@ -60,6 +60,7 @@ struct MultiTrackPlayerView: View {
                     }) {
                         Image(systemName: player.isPlaying ? "pause.fill" : "play.fill")
                             .font(.system(size: 50))
+                            .contentTransition(.symbolEffect(.replace.downUp))
                     }
                     Spacer()
                     // Fast forward 15 seconds

@@ -59,10 +59,11 @@ struct SettingView: View {
                             .clipShape(RoundedRectangle(cornerRadius: 8))
                         }
                     }
+                    .padding()
                 }
-                .padding(20)
                 .background(Color(.systemGray6))
                 .cornerRadius(cardCornerRadius)
+                .padding()
 
                 Spacer()
             }

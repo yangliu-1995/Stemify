@@ -138,6 +138,8 @@ class MultiTrackAudioPlayer: ObservableObject {
         do {
             if !audioEngine.isRunning {
                 try audioEngine.start()
+                try AVAudioSession.sharedInstance().setCategory(.playback)
+                try AVAudioSession.sharedInstance().setActive(true)
             }
             
             let startSampleTime = AVAudioFramePosition(pausedTime * 44100) // Assuming 44.1kHz sample rate

@@ -47,14 +47,14 @@ struct MainView: View {
                                 Text("Select Audio File")
                             }
                             .font(.system(size: 16, weight: .medium))
-                            .foregroundColor(viewModel.isProcessing ? .secondary : Color(.label))
                             .frame(maxWidth: .infinity)
                             .frame(height: 44)
-                            .background(viewModel.isProcessing ? Color.gray.opacity(0.1) : Color(.label).opacity(0.1))
                             .clipShape(fileButtonShape)
                         }
+                        .tint(Color(.systemBackground))
+                        .foregroundStyle(Color(.label))
                         .disabled(viewModel.isProcessing)
-                        .opacity(viewModel.isProcessing ? 0.6 : 1.0)
+                        .modifier(GlassIfAvailable())
                     }
                     .padding(20)
                     .background(Color(.systemGray6))
@@ -86,27 +86,38 @@ struct MainView: View {
                                 HStack {
                                     Text(viewModel.selectedModel.name)
                                         .font(.system(size: 16, weight: .medium))
-                                        .foregroundColor(viewModel.isProcessing ? .secondary : .primary)
                                     Image(systemName: "chevron.down")
                                         .font(.system(size: 12, weight: .medium))
-                                        .foregroundColor(.secondary)
                                 }
-                                .padding(.horizontal, 12)
-                                .padding(.vertical, 8)
-                                .background(viewModel.isProcessing ? Color(.systemGray4) : Color(.systemGray5))
-                                .clipShape(modelButtonShape)
+                                .padding(.horizontal, 6)
                             }
                             .disabled(viewModel.isProcessing)
-                            .opacity(viewModel.isProcessing ? 0.6 : 1.0)
+                            .modifier(GlassIfAvailable(isProminent: false))
                         }
 
-                        // Processing button or progress
-                        ProcessingButton(
-                            isProcessing: viewModel.isProcessing,
-                            progress: viewModel.progress,
-                            isEnabled: viewModel.isStartButtonEnabled,
-                            action: { viewModel.processAudio() }
-                        )
+                        Button(action: {
+                            viewModel.processAudio()
+                        }) {
+                            HStack {
+                                if viewModel.isProcessing {
+                                    ProgressView()
+                                        .progressViewStyle(.circular)
+                                        .tint(Color(.systemBackground))
+                                        .scaleEffect(0.8)
+                                    Text(String(format: "%.0f%%", viewModel.progress * 100))
+                                } else {
+                                    Image(systemName: "play.fill")
+                                    Text("Start Process")
+                                }
+                            }
+                            .font(.system(size: 16, weight: .medium))
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 44)
+                            .foregroundStyle(Color(.systemBackground))
+                            .clipShape(fileButtonShape)
+                        }
+
+                        .modifier(GlassIfAvailable())
 
                         // Status text
                         Text(viewModel.status)
@@ -152,8 +163,7 @@ struct MainView: View {
     }
 }
 
-struct MainView_Previews: PreviewProvider {
-    static var previews: some View {
-        MainView()
-    }
+#Preview {
+    MainView()
+        .tint(Color(.label))
 }

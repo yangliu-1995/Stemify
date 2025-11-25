@@ -14,59 +14,63 @@ struct ProcessingButton: View {
     let action: () -> Void
     
     var body: some View {
-        Button(action: action) {
-            ZStack {
-                // Background
-                Group {
-                    if #available(iOS 26.0, *) {
-                        Capsule()
-                            .fill(buttonBackgroundColor)
-                    } else {
-                        RoundedRectangle(cornerRadius: 8)
-                            .fill(buttonBackgroundColor)
-                    }
-                }
-                .frame(height: 50)
-                
-                if isProcessing {
-                    // Progress background
-                    HStack {
-                        Rectangle()
-                            .fill(Color(.label))
-                            .frame(width: progressWidth)
-                        Spacer(minLength: 0)
+        GeometryReader { proxy in
+            Button(action: action) {
+                ZStack {
+                    // Background
+                    Group {
+                        if #available(iOS 26.0, *) {
+                            Capsule()
+                                .fill(buttonBackgroundColor)
+                                .glassEffect()
+                        } else {
+                            RoundedRectangle(cornerRadius: 8)
+                                .fill(buttonBackgroundColor)
+                        }
                     }
                     .frame(height: 50)
-                    
-                    // Progress text
-                    HStack {
-                        ProgressView()
-                            .progressViewStyle(CircularProgressViewStyle(tint: .white))
-                            .scaleEffect(0.8)
-                        Text(String(format: "%.0f%%", progress * 100))
-                            .font(.system(size: 16, weight: .semibold))
-                            .foregroundColor(.white)
+
+                    if isProcessing {
+                        // Progress background
+                        HStack {
+                            Rectangle()
+                                .fill(Color(.label))
+                                .frame(width: proxy.size.width * CGFloat(progress))
+                            Spacer(minLength: 0)
+                        }
+                        .frame(height: 50)
+
+                        // Progress text
+                        HStack {
+                            ProgressView()
+                                .progressViewStyle(CircularProgressViewStyle(tint: Color(.systemBackground)))
+                                .scaleEffect(0.8)
+                            Text(String(format: "%.0f%%", progress * 100))
+                                .font(.system(size: 16, weight: .semibold))
+                                .foregroundColor(Color(.systemBackground))
+                        }
+                    } else {
+                        // Normal button content
+                        HStack {
+                            Image(systemName: "play.fill")
+                                .font(.system(size: 16, weight: .medium))
+                            Text(buttonText)
+                                .font(.system(size: 16, weight: .semibold))
+                        }
+                        .foregroundColor(.white)
                     }
-                } else {
-                    // Normal button content
-                    HStack {
-                        Image(systemName: "play.fill")
-                            .font(.system(size: 16, weight: .medium))
-                        Text(buttonText)
-                            .font(.system(size: 16, weight: .semibold))
-                    }
-                    .foregroundColor(.white)
                 }
+                .clipShape(buttonShape)
             }
-            .clipShape(buttonShape)
+            .frame(height: 50)
+            .disabled(!isEnabled && !isProcessing)
+            .animation(.easeInOut(duration: 0.3), value: isProcessing)
         }
-        .disabled(!isEnabled && !isProcessing)
-        .animation(.easeInOut(duration: 0.3), value: isProcessing)
     }
     
     private var buttonBackgroundColor: Color {
         if isProcessing {
-            return Color(.label).opacity(0.3)
+            return Color(.label).opacity(0.6)
         } else if isEnabled {
             return Color(.label)
         } else {
@@ -80,12 +84,6 @@ struct ProcessingButton: View {
         } else {
             return "Start Processing"
         }
-    }
-    
-    private var progressWidth: CGFloat {
-        // Assuming button width is roughly screen width - 80 (40 padding on each side)
-        let maxWidth = UIScreen.main.bounds.width - 80
-        return maxWidth * CGFloat(progress)
     }
     
     private var buttonShape: AnyShape {

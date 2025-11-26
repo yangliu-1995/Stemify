@@ -11,6 +11,17 @@ struct MultiTrackPlayerView: View {
     @StateObject private var player = MultiTrackAudioPlayer()
     let audioUrls: [URL]
     @Environment(\.cardCornerRadius) private var cardCornerRadius
+    private let audioWaveformGenerators: [URL: AudioWaveformGenerator]
+
+    init(audioUrls: [URL]) {
+        self.audioUrls = audioUrls
+        var audioWaveformGenerators: [URL: AudioWaveformGenerator] = [:]
+        for url in audioUrls {
+            let audioWaveformGenerator = AudioWaveformGenerator(audioURL: url)
+            audioWaveformGenerators[url] = audioWaveformGenerator
+        }
+        self.audioWaveformGenerators = audioWaveformGenerators
+    }
 
     var body: some View {
         VStack(spacing: 16) {
@@ -80,16 +91,15 @@ struct MultiTrackPlayerView: View {
             // Individual Track Controls
             LazyVStack(spacing: 12) {
                 ForEach(player.tracks) { track in
-                    TrackControlView(
-                        track: track,
-                        progress: player.duration > 0 ? player.currentTime / player.duration : 0.0,
-                        onVolumeChange: { volume in
-                            player.setVolume(for: track.id, volume: volume)
-                        },
-                        onMuteToggle: { isMuted in
-                            player.setMute(for: track.id, isMuted: isMuted)
-                        }
-                    )
+                    if let audioWaveformGenerator = audioWaveformGenerators[track.url] {
+                        TrackControlView(
+                            audioWaveformGenerator: audioWaveformGenerator,
+                            track: track
+                        )
+                        .environmentObject(player)
+                    } else {
+                        EmptyView()
+                    }
                 }
             }
         }
@@ -107,8 +117,6 @@ struct MultiTrackPlayerView: View {
         return String(format: "%d:%02d", minutes, seconds)
     }
 }
-
-
 
 struct MultiTrackPlayerView_Previews: PreviewProvider {
     static var previews: some View {

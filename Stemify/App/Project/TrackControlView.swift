@@ -9,20 +9,18 @@ import SwiftUI
 
 struct TrackControlView: View {
     let track: AudioTrack
-    let progress: Double // 播放进度 0.0 - 1.0
-    let onVolumeChange: (Float) -> Void
-    let onMuteToggle: (Bool) -> Void
-    
+    @EnvironmentObject var player: MultiTrackAudioPlayer
+
     @State private var volume: Float
     @State private var isMuted: Bool
 
     @Environment(\.cardCornerRadius) private var cardCornerRadius
 
-    init(track: AudioTrack, progress: Double = 0.0, onVolumeChange: @escaping (Float) -> Void, onMuteToggle: @escaping (Bool) -> Void) {
+    private let audioWaveformGenerator: AudioWaveformGenerator
+
+    init(audioWaveformGenerator: AudioWaveformGenerator, track: AudioTrack) {
+        self.audioWaveformGenerator = audioWaveformGenerator
         self.track = track
-        self.progress = progress
-        self.onVolumeChange = onVolumeChange
-        self.onMuteToggle = onMuteToggle
         self._volume = State(initialValue: track.volume)
         self._isMuted = State(initialValue: track.isMuted)
     }
@@ -48,7 +46,7 @@ struct TrackControlView: View {
                 // Mute Button
                 Button(action: {
                     isMuted.toggle()
-                    onMuteToggle(isMuted)
+                    player.setMute(for: track.id, isMuted: isMuted)
                 }) {
                     Image(systemName: isMuted ? "speaker.slash.fill" : "speaker.2.fill")
                         .font(.title3)
@@ -57,11 +55,11 @@ struct TrackControlView: View {
             }
             
             // Waveform Display
-            WaveformView(audioURL: track.url, progress: progress)
+            WaveformView(audioWaveformGenerator: audioWaveformGenerator, progress: $player.progress)
                 .frame(height: 40)
                 .background(Color(.systemGray6))
                 .cornerRadius(6)
-            
+
             // Volume Control
             HStack {
                 Image(systemName: "speaker.1")
@@ -72,7 +70,7 @@ struct TrackControlView: View {
                     get: { volume },
                     set: { newValue in
                         volume = newValue
-                        onVolumeChange(newValue)
+                        player.setVolume(for: track.id, volume: volume)
                     }
                 ), in: 0...1)
                 .disabled(isMuted)
@@ -91,17 +89,5 @@ struct TrackControlView: View {
         .padding()
         .background(Color(.systemGray6))
         .cornerRadius(cardCornerRadius)
-    }
-}
-
-struct TrackControlView_Previews: PreviewProvider {
-    static var previews: some View {
-        TrackControlView(
-            track: AudioTrack(url: URL(fileURLWithPath: "/path/to/sample.mp3")),
-            progress: 0.3,
-            onVolumeChange: { _ in },
-            onMuteToggle: { _ in }
-        )
-        .padding()
     }
 }

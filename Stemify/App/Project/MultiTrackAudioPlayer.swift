@@ -43,7 +43,8 @@ class MultiTrackAudioPlayer: ObservableObject {
     @Published var currentTime: TimeInterval = 0
     @Published var duration: TimeInterval = 0
     @Published var tracks: [AudioTrack] = []
-    
+    @Published var progress: Double = 0
+
     // MARK: - Private Properties
     private let audioEngine = AVAudioEngine()
     private var playerNodes: [UUID: AVAudioPlayerNode] = [:]
@@ -129,6 +130,7 @@ class MultiTrackAudioPlayer: ObservableObject {
             self.tracks = newTracks
             self.duration = maxDuration
             self.currentTime = 0
+            self.progress = duration > 0 ? currentTime / duration : 0.0
         }
     }
     
@@ -201,6 +203,7 @@ class MultiTrackAudioPlayer: ObservableObject {
         
         Task { @MainActor in
             self.currentTime = self.pausedTime
+            self.progress = duration > 0 ? currentTime / duration : 0.0
         }
         
         if wasPlaying {
@@ -289,6 +292,7 @@ class MultiTrackAudioPlayer: ObservableObject {
         
         Task { @MainActor in
             self.currentTime = newTime
+            self.progress = duration > 0 ? currentTime / duration : 0.0
         }
         
         // Auto-stop when reaching the end

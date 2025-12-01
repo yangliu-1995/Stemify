@@ -12,6 +12,4 @@
 @optional
 - (void)audioProcessorDidUpdateProgress:(float)progress;
 - (void)audioProcessorDidStart;
-- (void)audioProcessorDidFinish;
-- (void)audioProcessorDidFailWithError:(NSString *)error;
 @end

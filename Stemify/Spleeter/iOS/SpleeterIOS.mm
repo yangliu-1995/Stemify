@@ -114,6 +114,9 @@
             NSLog(@"saved track：%@ -> %@", trackName, trackPath);
 #endif
         }
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.onCompletionHandler(YES, nil);
+        });
     });
 }
 
@@ -178,21 +181,4 @@
         }
     });
 }
-
-- (void)audioProcessorDidFinish {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        if (self.onCompletionHandler) {
-            self.onCompletionHandler(YES, nil);
-        }
-    });
-}
-
-- (void)audioProcessorDidFailWithError:(NSString *)error {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        if (self.onCompletionHandler) {
-            self.onCompletionHandler(NO, [NSError errorWithDomain:@"com.stemify.client" code:-1 userInfo:nil]);
-        }
-    });
-}
-
 @end

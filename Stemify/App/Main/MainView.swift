@@ -141,7 +141,7 @@ struct MainView: View {
         }
         .fileImporter(
             isPresented: $showingFileImporter,
-            allowedContentTypes: [.audio],
+            allowedContentTypes: [.audio, .video],
             allowsMultipleSelection: false
         ) { result in
             switch result {

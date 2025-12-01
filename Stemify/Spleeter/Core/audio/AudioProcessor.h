@@ -21,10 +21,6 @@ public:
     virtual void onProgressUpdate(float progress) = 0;
 
     virtual void onProcessingStart() = 0;
-
-    virtual void onProcessingFinish() = 0;
-
-    virtual void onProcessingError(const std::string& error) = 0;
 };
 
 class AudioProcessor {
@@ -50,8 +46,5 @@ private:
 
     void reportProgress(float progress);
     void reportStart();
-    void reportFinish();
-    void reportError(const std::string& error);
-
 };
 } // namespace spleeter

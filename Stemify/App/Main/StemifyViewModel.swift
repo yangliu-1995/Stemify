@@ -45,13 +45,13 @@ class StemifyViewModel: ObservableObject {
     private func createProjectFolderName(for fileURL: URL) -> String {
         let fileName = fileURL.deletingPathExtension().lastPathComponent
         let baseName = "\(fileName).stemifyproj"
-        
-        let documentsPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+
+        let tmpURL = URL.temporaryDirectory
         var finalName = baseName
         var counter = 1
         
         // Check if folder exists and add number suffix if needed
-        while FileManager.default.fileExists(atPath: documentsPath.appendingPathComponent(finalName).path) {
+        while FileManager.default.fileExists(atPath: tmpURL.appendingPathComponent(finalName).path) {
             finalName = "\(fileName)(\(counter)).stemifyproj"
             counter += 1
         }
@@ -77,9 +77,9 @@ class StemifyViewModel: ObservableObject {
         }
 
         // Create project folder
-        let documentsPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+        let temporaryPath = URL.temporaryDirectory
         let projectFolderName = createProjectFolderName(for: fileURL)
-        let projectPath = documentsPath.appendingPathComponent(projectFolderName)
+        let projectPath = temporaryPath.appendingPathComponent(projectFolderName)
 
         do {
             try FileManager.default.createDirectory(at: projectPath, withIntermediateDirectories: true)
@@ -149,10 +149,17 @@ class StemifyViewModel: ObservableObject {
 
                     // Show completion alert
                     if let currentProjectPath = self.currentProjectPath {
-                        let folderName = (currentProjectPath as NSString).lastPathComponent
-                        self.alertTitle = "Processing Completed"
-                        self.alertMessage = "Audio separation finished in \(elapsed) seconds.\nResults saved in project folder: \(folderName)"
-                        self.showAlert = true
+                        let documentURL = URL.documentsDirectory
+                        let finalPath = documentURL.appendingPathComponent(projectFolderName).path
+                        DispatchQueue.global().async {
+                            try? FileManager.default.moveItem(atPath: decodedProjectPath, toPath: finalPath)
+                            let folderName = (currentProjectPath as NSString).lastPathComponent
+                            DispatchQueue.main.async {
+                                self.alertTitle = "Processing Completed"
+                                self.alertMessage = "Audio separation finished in \(elapsed) seconds.\nResults saved in project folder: \(folderName)"
+                                self.showAlert = true
+                            }
+                        }
                     }
                 } else {
                     self.status = "Processing failed"

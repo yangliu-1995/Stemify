@@ -21,9 +21,6 @@ public:
     
     void onProgressUpdate(float progress) override;
     void onProcessingStart() override;
-    void onProcessingFinish() override;
-    void onProcessingError(const std::string& error) override;
-
 private:
     __weak id<AudioProcessorViewDelegate> viewDelegate_;
 };

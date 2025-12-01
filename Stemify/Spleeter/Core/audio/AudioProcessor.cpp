@@ -110,7 +110,6 @@ std::vector<Waveform> AudioProcessor::ProcessAudio(const Waveform& inputWaveform
                                     + std::to_string(num_tracks)
                                     + ", but got "
                                     + std::to_string(results.size());
-            reportError(error_msg);
             return track_results;
         }
 
@@ -165,8 +164,6 @@ std::vector<Waveform> AudioProcessor::ProcessAudio(const Waveform& inputWaveform
     }
 
     reportProgress(1.0f);
-
-    reportFinish();
     
     return track_results;
 }
@@ -182,17 +179,4 @@ void AudioProcessor::reportStart() {
         delegate->onProcessingStart();
     }
 }
-
-void AudioProcessor::reportFinish() {
-    if (auto delegate = delegate_.lock()) {
-        delegate->onProcessingFinish();
-    }
-}
-
-void AudioProcessor::reportError(const std::string& error) {
-    if (auto delegate = delegate_.lock()) {
-        delegate->onProcessingError(error);
-    }
-}
-
 } // namespace spleeter

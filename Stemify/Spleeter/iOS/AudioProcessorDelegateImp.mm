@@ -8,7 +8,6 @@
 #import "AudioProcessorDelegateImp.h"
 
 namespace spleeter {
-
 AudioProcessorDelegateImp::AudioProcessorDelegateImp(__weak id<AudioProcessorViewDelegate> viewDelegate)
     : viewDelegate_(viewDelegate) {
 }
@@ -28,18 +27,4 @@ void AudioProcessorDelegateImp::onProcessingStart() {
         [viewDelegate_ audioProcessorDidStart];
     }
 }
-
-void AudioProcessorDelegateImp::onProcessingFinish() {
-    if (viewDelegate_ && [viewDelegate_ respondsToSelector:@selector(audioProcessorDidFinish)]) {
-        [viewDelegate_ audioProcessorDidFinish];
-    }
-}
-
-void AudioProcessorDelegateImp::onProcessingError(const std::string& error) {
-    if (viewDelegate_ && [viewDelegate_ respondsToSelector:@selector(audioProcessorDidFailWithError:)]) {
-        NSString *errorString = [NSString stringWithUTF8String:error.c_str()];
-        [viewDelegate_ audioProcessorDidFailWithError:errorString];
-    }
-}
-
 } // namespace spleeter
